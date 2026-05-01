@@ -99,6 +99,62 @@ class AuthController extends GetxController {
       _isLoading.value = false;
     }
   }
+
+  /// Sign in quickly using a built-in demo account for local demos.
+  Future<void> signInAsDemo() async {
+    _isLoading.value = true;
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      final user = UserModel(
+        id: 'demo',
+        name: 'Demo User',
+        age: 28,
+        bio: 'This is a demo account for presentations and testing.',
+        photos: [
+          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400',
+          'https://images.unsplash.com/photo-1545996124-1b0a2c5b6a3f?w=400',
+        ],
+        location: 'San Francisco, CA',
+        distance: 1.0,
+        interests: ['Hiking', 'Coffee', 'Design'],
+        occupation: 'Product Designer',
+        education: 'MIT',
+        height: 170,
+        gender: 'Female',
+        lookingFor: 'Male',
+        isVerified: true,
+        isOnline: true,
+        lastActive: DateTime.now(),
+        languages: ['English'],
+        relationshipGoal: 'Casual',
+        hasChildren: false,
+        smoking: 'Never',
+        drinking: 'Socially',
+        religion: 'None',
+        politics: 'Neutral',
+        zodiacSign: 'Gemini',
+        instagram: '@demo_user',
+        spotify: '',
+      );
+
+      _currentUser.value = user;
+      _isAuthenticated.value = true;
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('current_user', user.toJson().toString());
+
+      Get.offAllNamed('/main');
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to sign in demo user. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      _isLoading.value = false;
+    }
+  }
   
   Future<void> signUp({
     required String email,
